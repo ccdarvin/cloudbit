@@ -1,6 +1,7 @@
 fastapi
 uvicorn[standard]
-SQLAlchemy
+SQLAlchemy==2.0.15
+alembic
 
 fastapi-users[sqlalchemy]
 aiosqlite
