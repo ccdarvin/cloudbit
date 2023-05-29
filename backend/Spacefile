@@ -1,0 +1,15 @@
+# Spacefile Docs: https://go.deta.dev/docs/spacefile/v0
+v: 0
+micros:
+  - name: cloudbit-api
+    src: ./
+    engine: python3.9
+    primary: true
+    public_routes:
+      - "/*"
+    presets:
+      env:
+        - name: DB_URL
+          description: Database URL
+    run: uvicorn main:app
+    dev: .venv/bin/uvicorn main:app --reload
