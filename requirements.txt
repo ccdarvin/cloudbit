@@ -4,4 +4,6 @@ SQLAlchemy==2.0.15
 alembic
 
 fastapi-users[sqlalchemy]
-aiosqlite
+asyncpg
+
+pytest
