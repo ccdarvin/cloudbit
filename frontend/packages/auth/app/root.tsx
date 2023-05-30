@@ -1,4 +1,4 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { V2_MetaFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -22,11 +22,15 @@ import { authProvider } from "~/authProvider";
 
 const API_URL = "https://api.fake-rest.refine.dev";
 
-export const meta: MetaFunction = () => ({
-  charset: "utf-8",
-  title: "New Remix + Refine App",
-  viewport: "width=device-width,initial-scale=1",
-});
+export const meta: V2_MetaFunction = () => {
+  return [
+    { title: "Cloudbit Auth" },
+    { name: "viewport", content: "width=device-width, initial-scale=1" },
+    { charSet : "utf-8" }
+  ]
+}
+
+
 
 export default function App() {
   return (
