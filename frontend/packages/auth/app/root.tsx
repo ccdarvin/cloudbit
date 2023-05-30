@@ -1,4 +1,4 @@
-import type { V2_MetaFunction } from "@remix-run/node";
+import { LoaderArgs, V2_MetaFunction, json } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -9,7 +9,7 @@ import {
 } from "@remix-run/react";
 
 import { notificationProvider } from "@refinedev/antd";
-import { GitHubBanner, Refine } from "@refinedev/core";
+import { Refine } from "@refinedev/core";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 import routerProvider, {
   UnsavedChangesNotifier,
@@ -19,6 +19,8 @@ import { ColorModeContextProvider } from "@contexts";
 import resetStyle from "@refinedev/antd/dist/reset.css";
 import dataProvider from "@refinedev/simple-rest";
 import { authProvider } from "~/authProvider";
+import * as cookie from "cookie";
+
 
 const API_URL = "https://api.fake-rest.refine.dev";
 
@@ -30,7 +32,11 @@ export const meta: V2_MetaFunction = () => {
   ]
 }
 
-
+// load theme mode from cookie
+export async function loader({ request }: LoaderArgs) {
+  const themeMode = cookie.parse(request.headers.get("Cookie") ?? "").mode;
+  return json({ themeMode });
+}
 
 export default function App() {
   return (
@@ -38,9 +44,11 @@ export default function App() {
       <head>
         <Meta />
         <Links />
+        {typeof document === "undefined"
+          ? "__STYLES__"
+          : null}
       </head>
       <body>
-        <GitHubBanner />
         <RefineKbarProvider>
           <ColorModeContextProvider>
             <RefineKbarProvider>
