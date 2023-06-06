@@ -1,8 +1,12 @@
-from fastapi import Depends, FastAPI
+from fastapi import  FastAPI
 
-from .models import User
-from .schemas import UserCreate, UserRead, UserUpdate
+
+from .schemas import (
+    UserCreate, UserRead, UserUpdate,
+)
 from .users import auth_backend, current_active_user, fastapi_users
+
+
 
 app = FastAPI()
 
@@ -25,7 +29,3 @@ app.include_router(
     fastapi_users.get_users_router(UserRead, UserUpdate),
     tags=["users"],
 )
-
-@app.get("/authenticated-route")
-async def authenticated_route(user: User = Depends(current_active_user)):
-    return {"message": f"Hello {user.email}!"}

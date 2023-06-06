@@ -4,6 +4,9 @@ SQLAlchemy==2.0.15
 alembic
 
 fastapi-users[sqlalchemy]
+fastapi-pagination
 asyncpg
 
 pytest
+httpx
+aiosqlite

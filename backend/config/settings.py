@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 
+import os
 from pydantic import BaseSettings
 
 
 class Settings(BaseSettings):
     db_url: str 
 
-    class Config:
-        env_file = ".env"
 
 
-
-settings = Settings()
+if os.getenv("TESTING"):
+    settings = Settings(_env_file=".env.test")
+else:
+    settings = Settings(_env_file=".env")
