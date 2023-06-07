@@ -9,18 +9,23 @@ class UserRead(schemas.BaseUser[uuid.UUID]):
     first_name: Optional[str]
     last_name: Optional[str]
 
-
+    class Config:
+        orm_mode = True
+        
+        
 class UserCreate(schemas.BaseUserCreate):
-    pass
-
+    class Config:
+        orm_mode = True
 
 class UserUpdate(schemas.BaseUserUpdate):
     first_name: Optional[str]
     last_name: Optional[str]
     
-
+    class Config:
+        orm_mode = True
+        
+        
 ### Cloud App
-
 
 class CloudAppRead(BaseModel):
     id: int
@@ -29,6 +34,8 @@ class CloudAppRead(BaseModel):
     creator: UserRead
     is_creator: bool
 
+    class Config:
+        orm_mode = True
 
 class CloudAppCreate(BaseModel):
     name: str
@@ -38,9 +45,15 @@ class CloudAppCreate(BaseModel):
         regex=r"^[a-zA-Z0-9_-]+$"
     )
     
+    class Config:
+        orm_mode = True
+    
 
 
 class CloudAppUpdate(BaseModel):
     name: Optional[str]
     is_creator: Optional[bool]
+    
+    class Config:
+        orm_mode = True
 

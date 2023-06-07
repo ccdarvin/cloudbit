@@ -4,11 +4,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
 from fastapi_pagination.ext.sqlalchemy import paginate
-from fastapi_pagination import Page
+from fastapi_pagination.cursor import CursorPage
 
 from config.db import get_async_session
 from .models import User, AppCloud, AppCloudUser
-from .schemas import CloudAppCreate, CloudAppRead
+from .schemas import CloudAppCreate, CloudAppRead, UserRead
 from .users import current_active_user
 
 
@@ -59,7 +59,19 @@ async def create_cloud_app(
 async def get_cloud_apps(
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
-    params
-):
-    query = select(AppCloud).join(AppCloudUser).filter(AppCloudUser.User_id == user.id)
-    return await paginate(session, query)
+    #params
+) -> CursorPage[CloudAppRead]:
+    query = select(AppCloud, AppCloudUser).join(AppCloudUser).filter(AppCloudUser.User_id == user.id).order_by(AppCloud.id)
+    
+    async def transformer(data: tuple[AppCloud, AppCloudUser]) -> CloudAppRead:
+        print(user)
+        result = [CloudAppRead(
+            id=app_cloud.id,
+            name=app_cloud.name,
+            code=app_cloud.code,
+            creator=UserRead.from_orm(user),
+            is_creator=app_user.is_creator
+        ) for app_cloud, app_user in data]
+        return result
+    
+    return await paginate(session, query, transformer=transformer)

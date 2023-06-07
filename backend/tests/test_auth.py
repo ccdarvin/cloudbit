@@ -97,5 +97,4 @@ async def test_app_cloud_code_fail(client):
 async def test_app_cloud_list(client, login):
     response = await client.get("/cloud_app", headers={"Authorization": f"Bearer {login['access_token']}"})
     assert response.status_code == 200
-    print(response.json())
-    assert len(response.json()) > 0
+    assert len(response.json()['items']) > 0
