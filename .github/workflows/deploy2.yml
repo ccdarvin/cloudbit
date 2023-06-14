@@ -18,3 +18,10 @@ jobs:
           project_directory: ./backend/
           space_push: true
           list_on_discovery: true
+      - shell: cmd
+        env:
+          SPACE_ACCESS_TOKEN: ${{ secrets.SPACE_ACCESS_TOKEN }}
+          SPACE_ID: ${{ secrets.SPACE_ID }}
+        run: |
+          deta run --project-id $SPACE_ID --access-token $SPACE_ACCESS_TOKEN --watch
+
