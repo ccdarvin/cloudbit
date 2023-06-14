@@ -3,7 +3,7 @@ name: deploy to deta space
 on: 
   push:
     branches:
-    - main
+    - main1
 
 jobs:
   deploy:
