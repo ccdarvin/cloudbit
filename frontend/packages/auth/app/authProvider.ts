@@ -1,34 +1,40 @@
 import type { AuthBindings } from "@refinedev/core";
+import { Refine, HttpError } from "@refinedev/core";
 import * as cookie from "cookie";
 import Cookies from "js-cookie";
+import axios from "axios";
+import qs from "qs";
 
-const mockUsers = [
-  {
-    name: "John Doe",
-    email: "admin@refine.dev",
-    roles: ["admin"],
-    avatar: "https://i.pravatar.cc/150?img=1",
+// Access-Control-Allow-Origin	Missing Header	
+export const httpClient = axios.create();
+
+
+httpClient.interceptors.response.use(
+  (response) => {
+      console.log(response);
+      return response;
   },
-  {
-    name: "Jane Doe",
-    email: "editor@refine.dev",
-    roles: ["editor"],
-    avatar: "https://i.pravatar.cc/150?img=1",
+  (error) => {
+      const customError: HttpError = {
+          ...error,
+          message: error.response?.data?.message,
+          statusCode: error.response?.status,
+      };
+
+      return Promise.reject(customError);
   },
-  {
-    name: "John Doe",
-    email: "demo@refine.dev",
-    roles: ["admin"],
-    avatar: "https://i.pravatar.cc/150?img=1",
-  },
-];
+);
 
 const COOKIE_NAME = "user";
+const apiUrl = "http://127.0.0.1:8000";
 
 export const authProvider: AuthBindings = {
-  login: async ({ email }) => {
+  login: async ({ email, password }) => {
     // Suppose we actually send a request to the back end here.
-    const user = mockUsers.find((item) => item.email === email);
+    const {data: user} =  await httpClient.post(`${apiUrl}/auth/jwt/login`,
+      qs.stringify({username: email, password: password}),
+      {headers: {'content-type': 'application/x-www-form-urlencoded'}}
+    )
 
     if (user) {
       Cookies.set(COOKIE_NAME, JSON.stringify(user));
@@ -41,8 +47,8 @@ export const authProvider: AuthBindings = {
     return {
       success: false,
       error: {
-        message: "Login failed",
-        name: "Invalid email or password",
+        message: "Inicio de sesión fallido",
+        name: "Correo electrónico o contraseña incorrectos",
       },
     };
   },

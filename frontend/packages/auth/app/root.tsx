@@ -18,11 +18,11 @@ import routerProvider, {
 import { ColorModeContextProvider } from "@contexts";
 import resetStyle from "@refinedev/antd/dist/reset.css";
 import dataProvider from "@refinedev/simple-rest";
-import { authProvider } from "~/authProvider";
+import { authProvider, httpClient } from "~/authProvider";
 import * as cookie from "cookie";
 
 
-const API_URL = "https://api.fake-rest.refine.dev";
+const API_URL = "https://api.cloudbit.app";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -54,7 +54,7 @@ export default function App() {
             <RefineKbarProvider>
               <Refine
                 routerProvider={routerProvider}
-                dataProvider={dataProvider(API_URL)}
+                dataProvider={dataProvider(API_URL, httpClient)}
                 notificationProvider={notificationProvider}
                 authProvider={authProvider}
                 resources={[
