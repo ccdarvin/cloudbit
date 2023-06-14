@@ -18,8 +18,18 @@ export default function AuthLayout() {
           lg={{
             span: 10,
           }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          <Outlet />
+          <div style={{
+            maxWidth: "450px",
+            flexGrow: 1,
+          }}>
+            <Outlet />
+          </div>
         </Col>
         <Col
           style={{

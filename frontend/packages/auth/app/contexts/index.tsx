@@ -2,6 +2,7 @@ import { RefineThemes } from "@refinedev/antd";
 import { ConfigProvider, theme } from "antd";
 import { parseCookies, setCookie } from "nookies";
 import { useLoaderData } from "@remix-run/react"
+import { blue } from '@ant-design/colors'
 import React, {
   PropsWithChildren,
   createContext,
@@ -21,7 +22,7 @@ export const ColorModeContext = createContext<ColorModeContextType>(
 export const ColorModeContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
-  const [isMounted, setIsMounted] = useState(false);
+  
   const { themeMode } = useLoaderData();
   const [mode, setMode] = useState(themeMode);
 
@@ -35,12 +36,6 @@ export const ColorModeContextProvider: React.FC<PropsWithChildren> = ({
       setMode(darkModeOn ? "dark" : "light");
     }
   }, []);
-
-  useEffect(() => {
-    if (isMounted) {
-      
-    }
-  }, [isMounted]);
 
   const setColorMode = () => {
     const newMode = mode === "light" ? "dark" : "light";
@@ -64,7 +59,9 @@ export const ColorModeContextProvider: React.FC<PropsWithChildren> = ({
       <ConfigProvider
         // you can change the theme colors here. example: ...RefineThemes.Magenta,
         theme={{
-          ...RefineThemes.Blue,
+          token: {
+            colorPrimary: mode === "light" ? blue[6] : blue[5],
+          },
           algorithm: mode === "light" ? defaultAlgorithm : darkAlgorithm,
         }}
       >

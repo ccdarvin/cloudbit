@@ -1,16 +1,15 @@
-
+import React from "react";
 import {
-  LoginPageProps,
-  LoginFormTypes,
-  useLink,
+  RegisterPageProps,
+  RegisterFormTypes,
   useRouterType,
+  useLink,
   useActiveAuthProvider,
-  useLogin,
   useTranslate,
   useRouterContext,
+  useRegister,
 } from "@refinedev/core";
 import { ThemedTitleV2 as ThemedTitle } from "@refinedev/antd";
-
 import {
   Row,
   Col,
@@ -20,36 +19,33 @@ import {
   Form,
   Input,
   Button,
-  Checkbox,
-  CardProps,
   LayoutProps,
-  Divider,
+  CardProps,
   FormProps,
+  Divider,
   theme,
 } from "antd";
 
 const { Text, Title } = Typography;
 const { useToken } = theme;
 
-type LoginProps = LoginPageProps<LayoutProps, CardProps, FormProps>;
+type RegisterProps = RegisterPageProps<LayoutProps, CardProps, FormProps>;
 /**
- * **refine** has a default login page form which is served on `/login` route when the `authProvider` configuration is provided.
+ * **refine** has register page form which is served on `/register` route when the `authProvider` configuration is provided.
  *
- * @see {@link https://refine.dev/docs/ui-frameworks/antd/components/antd-auth-page/#login} for more details.
+ * @see {@link https://refine.dev/docs/ui-frameworks/antd/components/antd-auth-page/#register} for more details.
  */
-export default function LoginPage({
+export default function RegisterPage({
   providers,
-  registerLink,
-  forgotPasswordLink,
-  rememberMe,
-  contentProps,
+  loginLink,
   wrapperProps,
+  contentProps,
   renderContent,
   formProps,
   title,
-}: LoginProps) {
+}: RegisterProps) {
   const { token } = useToken();
-  const [form] = Form.useForm<LoginFormTypes>();
+  const [form] = Form.useForm<RegisterFormTypes>();
   const translate = useTranslate();
   const routerType = useRouterType();
   const Link = useLink();
@@ -58,7 +54,7 @@ export default function LoginPage({
   const ActiveLink = routerType === "legacy" ? LegacyLink : Link;
 
   const authProvider = useActiveAuthProvider();
-  const { mutate: login, isLoading } = useLogin<LoginFormTypes>({
+  const { mutate: register, isLoading } = useRegister<RegisterFormTypes>({
     v3LegacyAuthProviderCompatible: Boolean(authProvider?.isLegacy),
   });
 
@@ -72,7 +68,7 @@ export default function LoginPage({
           fontSize: "20px",
         }}
       >
-        {title ?? <ThemedTitle collapsed={false} text="Cloudbit"/>}
+        {title ?? <ThemedTitle collapsed={false} />}
       </div>
     );
 
@@ -83,7 +79,7 @@ export default function LoginPage({
         color: token.colorPrimaryTextHover,
       }}
     >
-      {translate("pages.login.title", "Ingresa a tu cuenta")}
+      {translate("pages.register.title", "Crea una nueva cuenta")}
     </Title>
   );
 
@@ -106,7 +102,7 @@ export default function LoginPage({
                   marginBottom: "8px",
                 }}
                 onClick={() =>
-                  login({
+                  register({
                     providerName: provider.name,
                   })
                 }
@@ -121,7 +117,7 @@ export default function LoginPage({
                 color: token.colorTextLabel,
               }}
             >
-              {translate("pages.login.divider", "or")}
+              {translate("pages.login.divider", "o")}
             </Text>
           </Divider>
         </>
@@ -139,25 +135,22 @@ export default function LoginPage({
       {...(contentProps ?? {})}
     >
       {renderProviders()}
-      <Form<LoginFormTypes>
+      <Form<RegisterFormTypes>
         layout="vertical"
         form={form}
-        onFinish={(values) => login(values)}
+        onFinish={(values) => register(values)}
         requiredMark={false}
-        initialValues={{
-          remember: false,
-        }}
         {...formProps}
       >
         <Form.Item
           name="email"
-          label={translate("pages.login.fields.email", "Correo electrónico")}
+          label={translate("pages.register.email", "Correo electrónico")}
           rules={[
             { required: true },
             {
               type: "email",
               message: translate(
-                "pages.login.errors.validEmail",
+                "pages.register.errors.validEmail",
                 "Correo electrónico inválido"
               ),
             },
@@ -165,12 +158,12 @@ export default function LoginPage({
         >
           <Input
             size="large"
-            placeholder={translate("pages.login.fields.email", "Correo electrónico")}
+            placeholder={translate("pages.register.fields.email", "Correo electrónico")}
           />
         </Form.Item>
         <Form.Item
           name="password"
-          label={translate("pages.login.fields.password", "Contraseña")}
+          label={translate("pages.register.fields.password", "Contraseña")}
           rules={[{ required: true }]}
         >
           <Input type="password" placeholder="●●●●●●●●" size="large" />
@@ -182,34 +175,32 @@ export default function LoginPage({
             marginBottom: "24px",
           }}
         >
-          {rememberMe ?? (
-            <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox
-                style={{
-                  fontSize: "12px",
-                }}
-              >
-                {translate("pages.login.buttons.rememberMe", "Recuérdame")}
-              </Checkbox>
-            </Form.Item>
-          )}
-          {forgotPasswordLink ?? (
-            <ActiveLink
+          {loginLink ?? (
+            <Text
               style={{
-                color: token.colorPrimaryTextHover,
-                fontSize: "12px",
+                fontSize: 12,
                 marginLeft: "auto",
               }}
-              to="/forgot-password"
             >
-              {translate(
-                "pages.login.buttons.forgotPassword",
-                "¿Olvidaste tu contraseña?"
-              )}
-            </ActiveLink>
+              {translate("pages.login.buttons.haveAccount", "¿Ya tienes una cuenta?")}{" "}
+              <ActiveLink
+                style={{
+                  fontWeight: "bold",
+                  color: token.colorPrimaryTextHover,
+                }}
+                to="/login"
+              >
+                {translate("pages.login.signin", "Iniciar sesión")}
+              </ActiveLink>
+            </Text>
           )}
         </div>
-        <Form.Item>
+
+        <Form.Item
+          style={{
+            marginBottom: 0,
+          }}
+        >
           <Button
             type="primary"
             size="large"
@@ -217,29 +208,10 @@ export default function LoginPage({
             loading={isLoading}
             block
           >
-            {translate("pages.login.signin", "Iniciar sesión")}
+            {translate("pages.register.buttons.submit", "Registrate")}
           </Button>
         </Form.Item>
       </Form>
-      <div style={{ marginTop: 8 }}>
-        {registerLink ?? (
-          <Text style={{ fontSize: 12 }}>
-            {translate(
-              "pages.login.buttons.noAccount",
-              "¿No tienes una cuenta?"
-            )}{" "}
-            <ActiveLink
-              to="/register"
-              style={{
-                fontWeight: "bold",
-                color: token.colorPrimaryTextHover,
-              }}
-            >
-              {translate("pages.login.signup", "Regístrate")}
-            </ActiveLink>
-          </Text>
-        )}
-      </div>
     </Card>
   );
 
