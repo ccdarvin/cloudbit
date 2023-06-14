@@ -23,5 +23,6 @@ jobs:
           SPACE_ACCESS_TOKEN: ${{ secrets.SPACE_ACCESS_TOKEN }}
           SPACE_ID: ${{ secrets.SPACE_ID }}
         run: |
-          deta run --project-id $SPACE_ID --access-token $SPACE_ACCESS_TOKEN --watch
+          echo $SPACE_ACCESS_TOKEN
+          echo $SPACE_ID
 
