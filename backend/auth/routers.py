@@ -7,7 +7,7 @@ from fastapi_pagination.ext.sqlalchemy import paginate
 from fastapi_pagination.cursor import CursorPage
 
 from config.db import get_async_session
-from .models import User, AppCloud, AppCloudUser
+from .models import User, CloudApp, CloudAppUser
 from .schemas import CloudAppCreate, CloudAppRead, UserRead
 from .users import current_active_user
 
@@ -18,7 +18,7 @@ router = APIRouter()
 @router.get("/cloud_app/check_code", status_code=200)
 async def check_code(code: str, session: AsyncSession = Depends(get_async_session)):
     app_cloud = await session.execute(
-        select(AppCloud).filter(AppCloud.code == code)
+        select(CloudApp).filter(CloudApp.code == code)
     )
     app_cloud = app_cloud.scalars().first()
     return {
@@ -34,11 +34,11 @@ async def create_cloud_app(
 ) -> CloudAppRead:
     
     # create could app
-    app_cloud = AppCloud(**cloud_app.dict())
+    app_cloud = CloudApp(**cloud_app.dict())
     session.add(app_cloud)
     await session.commit()
     # create app user
-    app_user = AppCloudUser(
+    app_user = CloudAppUser(
         app_cloud_id=app_cloud.id,
         User_id=user.id,
         is_creator=True
@@ -61,9 +61,12 @@ async def get_cloud_apps(
     session: AsyncSession = Depends(get_async_session),
     #params
 ) -> CursorPage[CloudAppRead]:
-    query = select(AppCloud, AppCloudUser).join(AppCloudUser).filter(AppCloudUser.User_id == user.id).order_by(AppCloud.id)
+    query = select(
+        CloudApp, CloudAppUser).join(
+            CloudAppUser).filter(
+                CloudAppUser.User_id == user.id).order_by(CloudApp.id)
     
-    async def transformer(data: tuple[AppCloud, AppCloudUser]) -> CloudAppRead:
+    async def transformer(data: tuple[CloudApp, CloudAppUser]) -> CloudAppRead:
         print(user)
         result = [CloudAppRead(
             id=app_cloud.id,
