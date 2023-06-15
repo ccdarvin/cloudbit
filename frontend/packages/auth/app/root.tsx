@@ -59,11 +59,11 @@ export default function App() {
                 authProvider={authProvider}
                 resources={[
                   {
-                    name: "blog_posts",
-                    list: "/blog-posts",
-                    create: "/blog-posts/create",
-                    edit: "/blog-posts/edit/:id",
-                    show: "/blog-posts/show/:id",
+                    name: "cloud_app",
+                    list: "/app",
+                    create: "/app/create",
+                    edit: "/app/edit/:id",
+                    show: "/app/show/:id",
                     meta: {
                       canDelete: true,
                     },

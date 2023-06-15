@@ -25,7 +25,7 @@ export default function AuthLayout() {
           }}
         >
           <div style={{
-            maxWidth: "450px",
+            maxWidth: "30rem",
             flexGrow: 1,
           }}>
             <Outlet />

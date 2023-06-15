@@ -143,6 +143,20 @@ export default function RegisterPage({
         {...formProps}
       >
         <Form.Item
+          name="firstName"
+          label={translate("pages.register.fields.firstName", "Nombres")}
+          rules={[{ required: true }]}
+        >
+          <Input size="large" placeholder="Nombres" />
+        </Form.Item>
+        <Form.Item
+          name="lastName"
+          label={translate("pages.register.fields.lastName", "Apellidos")}
+          rules={[{ required: true }]}
+        >
+          <Input size="large" placeholder="Apellidos" />
+        </Form.Item>
+        <Form.Item
           name="email"
           label={translate("pages.register.email", "Correo electrónico")}
           rules={[
@@ -216,7 +230,9 @@ export default function RegisterPage({
   );
 
   return (
-    <Layout {...(wrapperProps ?? {})}>
+    <Layout 
+      {...(wrapperProps ?? {})}
+    >
       <Row
         justify="center"
         align="middle"

@@ -25,7 +25,7 @@ httpClient.interceptors.response.use(
   },
 );
 
-const COOKIE_NAME = "user";
+const COOKIE_NAME = "_t";
 const apiUrl = "http://127.0.0.1:8000";
 
 export const authProvider: AuthBindings = {

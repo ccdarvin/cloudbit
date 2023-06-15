@@ -244,7 +244,9 @@ export default function LoginPage({
   );
 
   return (
-    <Layout {...(wrapperProps ?? {})}>
+    <Layout 
+      {...(wrapperProps ?? {})}
+    >
       <Row
         justify="center"
         align="middle"
