@@ -6,6 +6,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
 
 import { notificationProvider } from "@refinedev/antd";
@@ -17,12 +18,10 @@ import routerProvider, {
 
 import { ColorModeContextProvider } from "@contexts";
 import resetStyle from "@refinedev/antd/dist/reset.css";
-import dataProvider from "@refinedev/simple-rest";
-import { authProvider, httpClient } from "~/authProvider";
+import { dataProvider } from "~/fastAPI";
+import { authProvider, httpClient, COOKIE_NAME, API_URL } from "~/authProvider";
 import * as cookie from "cookie";
 
-
-const API_URL = "https://api.cloudbit.app";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -35,10 +34,18 @@ export const meta: V2_MetaFunction = () => {
 // load theme mode from cookie
 export async function loader({ request }: LoaderArgs) {
   const themeMode = cookie.parse(request.headers.get("Cookie") ?? "").mode;
-  return json({ themeMode });
+  const token = cookie.parse(request.headers.get("Cookie") ?? "")[COOKIE_NAME];
+  return json({ themeMode, token });
 }
 
 export default function App() {
+  // confige http client with tocken
+  const { token } = useLoaderData();
+
+  if (token) {
+    httpClient.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  }
+
   return (
     <html lang="en">
       <head>
@@ -60,10 +67,10 @@ export default function App() {
                 resources={[
                   {
                     name: "cloud_app",
-                    list: "/app",
-                    create: "/app/create",
-                    edit: "/app/edit/:id",
-                    show: "/app/show/:id",
+                    list: "/apps",
+                    create: "/apps/create",
+                    edit: "/apps/edit/:id",
+                    show: "/apps/show/:id",
                     meta: {
                       canDelete: true,
                     },

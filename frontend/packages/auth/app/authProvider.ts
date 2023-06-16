@@ -11,7 +11,6 @@ export const httpClient = axios.create();
 
 httpClient.interceptors.response.use(
   (response) => {
-      console.log(response);
       return response;
   },
   (error) => {
@@ -25,19 +24,19 @@ httpClient.interceptors.response.use(
   },
 );
 
-const COOKIE_NAME = "_t";
-const apiUrl = "http://127.0.0.1:8000";
+export const COOKIE_NAME = "_t";
+export const API_URL = "http://127.0.0.1:8000";
 
 export const authProvider: AuthBindings = {
   login: async ({ email, password }) => {
     // Suppose we actually send a request to the back end here.
-    const {data: user} =  await httpClient.post(`${apiUrl}/auth/jwt/login`,
+    const {data} =  await httpClient.post(`${API_URL}/auth/jwt/login`,
       qs.stringify({username: email, password: password}),
       {headers: {'content-type': 'application/x-www-form-urlencoded'}}
     )
 
-    if (user) {
-      Cookies.set(COOKIE_NAME, JSON.stringify(user));
+    if (data) {
+      Cookies.set(COOKIE_NAME, data.access_token);
       return {
         success: true,
         redirectTo: "/",
@@ -78,7 +77,6 @@ export const authProvider: AuthBindings = {
     }
 
     const { pathname } = new URL(request.url);
-
     if (!user) {
       return {
         authenticated: false,
@@ -97,9 +95,10 @@ export const authProvider: AuthBindings = {
   },
   getPermissions: async () => null,
   getIdentity: async () => {
-    const parsedCookie = Cookies.get(COOKIE_NAME);
-    if (parsedCookie) {
-      const user = parsedCookie ? JSON.parse(parsedCookie) : undefined;
+    const token = Cookies.get(COOKIE_NAME);
+    
+    if (token) {
+      const user = {}
       return user;
     }
     return null;
