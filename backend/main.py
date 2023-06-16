@@ -29,7 +29,3 @@ async def root():
         "name": "cloudbit.app",
         "https": "https://cloudbit.app"
     }
-
-
-app.mount('/', app=auth_app)
-

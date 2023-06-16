@@ -26,6 +26,7 @@ async def check_code(code: str, session: AsyncSession = Depends(get_async_sessio
     }
 
 
+@router.head('/')
 @router.post("/cloud_app", status_code=201)
 async def create_cloud_app(
     cloud_app: CloudAppCreate,
@@ -67,7 +68,6 @@ async def get_cloud_apps(
                 CloudAppUser.User_id == user.id).order_by(CloudApp.id)
     
     async def transformer(data: tuple[CloudApp, CloudAppUser]) -> CloudAppRead:
-        print(user)
         result = [CloudAppRead(
             id=app_cloud.id,
             name=app_cloud.name,
