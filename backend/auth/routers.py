@@ -5,12 +5,12 @@ from sqlalchemy import select
 
 from fastapi_pagination.ext.sqlalchemy import paginate
 from fastapi_pagination.cursor import CursorPage
+from fastapi_pagination.links import Page
 
 from config.db import get_async_session
 from .models import User, CloudApp, CloudAppUser
 from .schemas import CloudAppCreate, CloudAppRead, UserRead
 from .users import current_active_user
-
 
 
 router = APIRouter()
@@ -60,7 +60,7 @@ async def get_cloud_apps(
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(get_async_session),
     #params
-) -> CursorPage[CloudAppRead]:
+) -> Page[CloudAppRead]:
     query = select(
         CloudApp, CloudAppUser).join(
             CloudAppUser).filter(

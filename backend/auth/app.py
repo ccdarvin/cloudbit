@@ -4,7 +4,7 @@ from .routers import router as cloud_app_router
 from .schemas import (
     UserCreate, UserRead, UserUpdate,
 )
-from .users import auth_backend, current_active_user, fastapi_users
+from .users import auth_backend, fastapi_users
 
 
 
