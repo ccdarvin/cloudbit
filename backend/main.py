@@ -12,6 +12,14 @@ add_pagination(app)
 # configure CORS
 origins = [
     "http://localhost:3000",
+    
+    "http://example.com:3000",
+    "http://auth.example.com:3000",
+    "http://dc.example.com:3000",
+    
+    "https://cloudbit.app",
+    "https://auth.cloudbit.app",
+    "https://dc.cloudbit.app",
 ]
 app.add_middleware(
     CORSMiddleware,
