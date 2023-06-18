@@ -7,6 +7,12 @@ export default function BlogPostCreate() {
   return <Create
     title="Crear una aplicación"
     saveButtonProps={saveButtonProps}
+    wrapperProps={{
+      style: {
+        maxWidth: 600,
+        margin: "auto",
+      },
+    }}
   >
     <Form 
       {...formProps} 

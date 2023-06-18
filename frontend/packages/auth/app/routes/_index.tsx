@@ -5,6 +5,8 @@ import { NavigateToResource } from "@refinedev/remix-router";
  *
  * This can also be done using the `loader` function and `redirect`.
  */
+
+
 export default function Index() {
-  return <NavigateToResource resource="/app/create" />;
+  return <NavigateToResource resource="cloud_app" />;
 }

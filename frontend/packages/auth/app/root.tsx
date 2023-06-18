@@ -16,10 +16,11 @@ import routerProvider, {
   UnsavedChangesNotifier,
 } from "@refinedev/remix-router";
 
-import { ColorModeContextProvider } from "@contexts";
+import { ColorModeContextProvider, COOKIE_MODE } from "@contexts";
 import resetStyle from "@refinedev/antd/dist/reset.css";
 import { dataProvider } from "~/fastAPI";
-import { authProvider, httpClient, COOKIE_NAME, API_URL } from "~/authProvider";
+import { authProvider, COOKIE_TOKEN , API_URL } from "~/authProvider";
+import { httpClient } from "~/fastAPI/utils";
 import * as cookie from "cookie";
 
 
@@ -33,8 +34,8 @@ export const meta: V2_MetaFunction = () => {
 
 // load theme mode from cookie
 export async function loader({ request }: LoaderArgs) {
-  const themeMode = cookie.parse(request.headers.get("Cookie") ?? "").mode;
-  const token = cookie.parse(request.headers.get("Cookie") ?? "")[COOKIE_NAME];
+  const themeMode = cookie.parse(request.headers.get("Cookie") ?? "")[COOKIE_MODE];
+  const token = cookie.parse(request.headers.get("Cookie") ?? "")[COOKIE_TOKEN];
   return json({ themeMode, token });
 }
 
@@ -47,7 +48,7 @@ export default function App() {
   }
 
   return (
-    <html lang="en">
+    <html lang="es">
       <head>
         <Meta />
         <Links />
@@ -69,22 +70,8 @@ export default function App() {
                     name: "cloud_app",
                     list: "/apps",
                     create: "/apps/create",
-                    edit: "/apps/edit/:id",
-                    show: "/apps/show/:id",
-                    meta: {
-                      canDelete: true,
-                    },
-                  },
-                  {
-                    name: "categories",
-                    list: "/categories",
-                    create: "/categories/create",
-                    edit: "/categories/edit/:id",
-                    show: "/categories/show/:id",
-                    meta: {
-                      canDelete: true,
-                    },
-                  },
+                    edit: "/apps/edit/:id"
+                  }
                 ]}
                 options={{
                   syncWithLocation: true,

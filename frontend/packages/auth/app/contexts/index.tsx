@@ -19,6 +19,9 @@ export const ColorModeContext = createContext<ColorModeContextType>(
   {} as ColorModeContextType
 );
 
+
+export const COOKIE_MODE = "_m";
+
 export const ColorModeContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
@@ -37,14 +40,17 @@ export const ColorModeContextProvider: React.FC<PropsWithChildren> = ({
     }
   }, []);
 
+  useEffect(() => {
+    // set theme from cookie
+    const domain = window.location.hostname.split(".").slice(-2).join(".");
+    setCookie(null, COOKIE_MODE, mode, {
+      domain
+    });
+  }, [mode]);
+
   const setColorMode = () => {
     const newMode = mode === "light" ? "dark" : "light";
     setMode(newMode);
-    // save in cookie can allow to use in subdomains
-    const domain = window.location.hostname.split(".").slice(-2).join(".");
-    setCookie(null, "mode", newMode, {
-      domain
-    });
   };
 
   const { darkAlgorithm, defaultAlgorithm } = theme;

@@ -3,7 +3,7 @@ import type { LoaderArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
 
-import { Header } from "@components/header";
+import Header from "@components/themedLayout/Header";
 import { authProvider } from "~/authProvider";
 
 export default function BaseLayout() {
@@ -11,7 +11,7 @@ export default function BaseLayout() {
     <>
       <ThemedLayoutV2
         Header={() => <Header sticky />}
-        Sider={() => <ThemedSiderV2 fixed />}
+        Sider={() => null}
       >
         <Outlet />
       </ThemedLayoutV2>

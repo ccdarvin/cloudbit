@@ -1,31 +1,14 @@
 import type { AuthBindings } from "@refinedev/core";
-import { Refine, HttpError } from "@refinedev/core";
 import * as cookie from "cookie";
 import Cookies from "js-cookie";
-import axios from "axios";
 import qs from "qs";
-
-// Access-Control-Allow-Origin	Missing Header	
-export const httpClient = axios.create();
+import { httpClient, domain } from "~/fastAPI/utils";
 
 
-httpClient.interceptors.response.use(
-  (response) => {
-      return response;
-  },
-  (error) => {
-      const customError: HttpError = {
-          ...error,
-          message: error.response?.data?.message,
-          statusCode: error.response?.status,
-      };
-
-      return Promise.reject(customError);
-  },
-);
-
-export const COOKIE_NAME = "_t";
+export const COOKIE_TOKEN = "_t";
+export const COOKIE_USER = "_u";
 export const API_URL = "http://127.0.0.1:8000";
+
 
 export const authProvider: AuthBindings = {
   login: async ({ email, password }) => {
@@ -36,7 +19,10 @@ export const authProvider: AuthBindings = {
     )
 
     if (data) {
-      Cookies.set(COOKIE_NAME, data.access_token);
+      // save token wiht access by subdomain
+      
+      Cookies.set(COOKIE_TOKEN, data.access_token, { domain });
+
       return {
         success: true,
         redirectTo: "/",
@@ -52,7 +38,8 @@ export const authProvider: AuthBindings = {
     };
   },
   logout: async () => {
-    Cookies.remove(COOKIE_NAME);
+    // remove token
+    Cookies.remove(COOKIE_TOKEN, { domain });
 
     return {
       success: true,
@@ -60,7 +47,13 @@ export const authProvider: AuthBindings = {
     };
   },
   onError: async (error) => {
-    console.error(error);
+    if (error.statusCode === 401) {
+      Cookies.remove(COOKIE_TOKEN, { domain });
+      const { pathname } = new URL(window.location.href);
+      return {
+        redirectTo: `/login?to=${pathname}`,
+      };
+    }
     return { error };
   },
   check: async (request) => {
@@ -69,10 +62,10 @@ export const authProvider: AuthBindings = {
       const hasCookie = request.headers.get("Cookie");
       if (hasCookie) {
         const parsedCookie = cookie.parse(request.headers.get("Cookie"));
-        user = parsedCookie[COOKIE_NAME];
+        user = parsedCookie[COOKIE_TOKEN];
       }
     } else {
-      const parsedCookie = Cookies.get(COOKIE_NAME);
+      const parsedCookie = Cookies.get(COOKIE_TOKEN);
       user = parsedCookie ? JSON.parse(parsedCookie) : undefined;
     }
 
@@ -94,13 +87,24 @@ export const authProvider: AuthBindings = {
     };
   },
   getPermissions: async () => null,
-  getIdentity: async () => {
-    const token = Cookies.get(COOKIE_NAME);
-    
-    if (token) {
-      const user = {}
-      return user;
+  getIdentity: async (reload) => {
+    const tokenAccess = Cookies.get(COOKIE_TOKEN);
+    const user = Cookies.get(COOKIE_USER);
+    if (!user) {
+      const { data } = await httpClient.get(`${API_URL}/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${tokenAccess}`,
+        },
+      });
+      Cookies.set(COOKIE_USER, JSON.stringify(data), { domain });
+      return {
+        ...data,
+        tokenAccess
+      }
     }
-    return null;
+    return {
+      ...JSON.parse(user||'{}'),
+      tokenAccess
+    }
   },
 };
