@@ -2,13 +2,12 @@ import type { AuthBindings } from "@refinedev/core";
 import * as cookie from "cookie";
 import Cookies from "js-cookie";
 import qs from "qs";
-import { httpClient } from "~/fastAPI/utils";
-import { COOKIE_DOMAIN, DOMIAINS } from "~/constants";
+import { httpClient, domain } from "~/fastAPI/utils";
 
 
 export const COOKIE_TOKEN = "_t";
 export const COOKIE_USER = "_u";
-export const API_URL = DOMIAINS.API;
+export const API_URL = "http://127.0.0.1:8000";
 
 
 export const authProvider: AuthBindings = {
@@ -22,7 +21,7 @@ export const authProvider: AuthBindings = {
     if (data) {
       // save token wiht access by subdomain
       
-      Cookies.set(COOKIE_TOKEN, data.access_token, { COOKIE_DOMAIN });
+      Cookies.set(COOKIE_TOKEN, data.access_token, { domain });
 
       return {
         success: true,
@@ -40,7 +39,7 @@ export const authProvider: AuthBindings = {
   },
   logout: async () => {
     // remove token
-    Cookies.remove(COOKIE_TOKEN, { COOKIE_DOMAIN });
+    Cookies.remove(COOKIE_TOKEN, { domain });
 
     return {
       success: true,
@@ -49,7 +48,7 @@ export const authProvider: AuthBindings = {
   },
   onError: async (error) => {
     if (error.statusCode === 401) {
-      Cookies.remove(COOKIE_TOKEN, { COOKIE_DOMAIN });
+      Cookies.remove(COOKIE_TOKEN, { domain });
       const { pathname } = new URL(window.location.href);
       return {
         redirectTo: `/login?to=${pathname}`,
@@ -97,7 +96,7 @@ export const authProvider: AuthBindings = {
           Authorization: `Bearer ${tokenAccess}`,
         },
       });
-      Cookies.set(COOKIE_USER, JSON.stringify(data), { COOKIE_DOMAIN });
+      Cookies.set(COOKIE_USER, JSON.stringify(data), { domain });
       return {
         ...data,
         tokenAccess

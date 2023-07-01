@@ -2,14 +2,12 @@ import { ConfigProvider, theme } from "antd";
 import { setCookie } from "nookies";
 import { useLoaderData } from "@remix-run/react"
 import { blue } from '@ant-design/colors'
-import { COOKIE_DOMAIN } from "~/constants";
 import React, {
   PropsWithChildren,
   createContext,
   useEffect,
   useState,
 } from "react";
-
 
 type ColorModeContextType = {
   mode: string;
@@ -43,8 +41,9 @@ export const ColorModeContextProvider: React.FC<PropsWithChildren> = ({
 
   useEffect(() => {
     // set theme from cookie
+    const domain = window.location.hostname.split(".").slice(-2).join(".");
     setCookie(null, COOKIE_MODE, mode, {
-      domain: COOKIE_DOMAIN,
+      domain
     });
   }, [mode]);
 

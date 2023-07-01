@@ -1,13 +1,12 @@
 import { List, useSimpleList, EditButton, ShowButton } from "@refinedev/antd";
 import { Card, Space, List as ListAnt, Button } from "antd";
+import { DOMIAINS } from "~/constants";
 
 export default function BlogPostList() {
   const { listProps } = useSimpleList()
 
   const goToApp = (item: any) => {
-    const domain = window.location.host.split('.').slice(-2).join('.')
-    const protocol = window.location.protocol
-    return `${protocol}//dc.${domain}/${item.code}`
+    return `//${DOMIAINS.DC}/${item.code}`
   }
   return <List
     title="Mis aplicaciones"
