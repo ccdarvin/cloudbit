@@ -16,6 +16,7 @@ const DOMIAINS_TEST = {
   // web
   WEB: 'http://example.com:4000',
   DOCS: 'http://docs.example.com:4001',
+  
 }
 
 const DOMIAINS_PROD = {

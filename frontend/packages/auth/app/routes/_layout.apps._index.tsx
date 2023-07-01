@@ -6,7 +6,7 @@ export default function BlogPostList() {
   const { listProps } = useSimpleList()
 
   const goToApp = (item: any) => {
-    return `//${DOMIAINS.DC}/${item.code}`
+    return `${DOMIAINS.DC}/${item.code}`
   }
   return <List
     title="Mis aplicaciones"
@@ -26,7 +26,7 @@ export default function BlogPostList() {
             bordered={false}
             hoverable
             actions={[
-              <EditButton type="ghost" recordItemId={item.id} />,
+              <EditButton type="ghost" recordItemId={item.code} />,
               <Button  type="ghost" href={goToApp(item)}> Ir </Button >,
             ]}
           >

@@ -1,12 +1,11 @@
-import { Create, useForm } from "@refinedev/antd"
+import { Edit, useForm } from "@refinedev/antd"
 import { Form, Input } from "antd"
-
 
 export default function BlogPostCreate() {
   const { formProps, saveButtonProps } = useForm();
 
-  return <Create
-    title="Crear una aplicación"
+  return <Edit
+    title="Editar aplicación"
     saveButtonProps={saveButtonProps}
     wrapperProps={{
       style: {
@@ -47,6 +46,6 @@ export default function BlogPostCreate() {
         <Input disabled />
       </Form.Item>
     </Form>
-  </Create>
+  </Edit>
     
 }

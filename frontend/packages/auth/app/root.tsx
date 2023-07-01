@@ -70,8 +70,8 @@ export default function App() {
                     name: "cloud_app",
                     list: "/apps",
                     create: "/apps/create",
-                    edit: "/apps/edit/:id"
-                  }
+                    edit: "/apps/:id/edit"
+                  },
                 ]}
                 options={{
                   syncWithLocation: true,
