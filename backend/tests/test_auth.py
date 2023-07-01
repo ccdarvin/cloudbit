@@ -62,6 +62,7 @@ async def test_update_me(client, login):
 # Create AppCloud
 ############################################################################################################
 
+app_code = None
 
 @pytest.mark.anyio
 async def test_app_cloud_code(client):
@@ -81,7 +82,8 @@ async def test_create_app_cloud(client, login):
     assert response.json()["name"] == "Test App Cloud"
     ## creck if user is creator
     assert response.json()["is_creator"] == True
-
+    global app_code
+    app_code = response.json()["code"]
 
 @pytest.mark.anyio
 async def test_app_cloud_code_fail(client):
@@ -94,7 +96,24 @@ async def test_app_cloud_code_fail(client):
 
 
 @pytest.mark.anyio
-async def test_app_cloud_list(client, login):
+async def test_list_app_cloud(client, login):
     response = await client.get("/cloud_app", headers={"Authorization": f"Bearer {login['access_token']}"})
     assert response.status_code == 200
     assert len(response.json()['items']) > 0
+    
+    
+@pytest.mark.anyio
+async def test_get_app_cloud(client, login):
+    response = await client.get(f"/cloud_app/{app_code}", headers={"Authorization": f"Bearer {login['access_token']}"})
+    assert response.status_code == 200
+    assert response.json()["code"] == app_code
+    
+
+@pytest.mark.anyio
+async def test_update_app_cloud(client, login):
+    response = await client.patch(f"/cloud_app/{app_code}", json={
+        "name": "Test App Cloud Updated"
+    }, headers={"Authorization": f"Bearer {login['access_token']}"})
+    assert response.status_code == 200
+    assert response.json()["name"] == "Test App Cloud Updated"
+    assert response.json()["code"] == app_code

@@ -6,11 +6,13 @@ from fastapi import Depends
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, select
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 
 from config.db import Base, async_session_maker, get_async_session
+
+from .schemas import UserRead
 
 
 class User(SQLAlchemyBaseUserTableUUID, Base):
@@ -31,9 +33,11 @@ class CloudAppUser(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     app_cloud_id: Mapped[int] = mapped_column(ForeignKey(CloudApp.id))
-    User_id: Mapped[str] = mapped_column(ForeignKey(User.id))
+    user_id: Mapped[str] = mapped_column(ForeignKey(User.id))
     is_creator: Mapped[bool] = mapped_column(default=False)
 
 
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
     yield SQLAlchemyUserDatabase(session, User)
+    
+    
